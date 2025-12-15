@@ -6,6 +6,7 @@ const ActivityHeatmap = () => {
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState([]);
     const [error, setError] = useState(null);
+    const [hoveredData, setHoveredData] = useState(null);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -181,18 +182,18 @@ const ActivityHeatmap = () => {
 
             // Draw Gitea Bar (Bottom)
             if (d.gitea > 0) {
-                drawBar(g, pos.x, pos.y, tileWidth, tileHeight, giteaH, colorGitea, `Gitea: ${d.gitea} on ${d.date.toDateString()}`);
+                drawBar(g, pos.x, pos.y, tileWidth, tileHeight, giteaH, colorGitea, `Gitea: ${d.gitea} on ${d.date.toDateString()}`, d);
             }
 
             // Draw GitHub Bar (Top)
             // Adjust y position up by gitea height
             if (d.github > 0) {
-                drawBar(g, pos.x, pos.y - giteaH, tileWidth, tileHeight, githubH, colorGithub, `GitHub: ${d.github} on ${d.date.toDateString()}`);
+                drawBar(g, pos.x, pos.y - giteaH, tileWidth, tileHeight, githubH, colorGithub, `GitHub: ${d.github} on ${d.date.toDateString()}`, d);
             }
         });
 
         // Function to draw isometric prism
-        function drawBar(container, x, y, w, h, z, color, tooltipText) {
+        function drawBar(container, x, y, w, h, z, color, tooltipText, dataItem) {
             // Top Face
             const pathTop = `M${x} ${y - z} 
                               L${x + w} ${y + h - z} 
@@ -226,11 +227,24 @@ const ActivityHeatmap = () => {
             group.append("title").text(tooltipText);
 
             // Hover effect
-            //  group.on("mouseenter", function() {
-            //      d3.select(this).selectAll("path").attr("opacity", 0.8);
-            //  }).on("mouseleave", function() {
-            //      d3.select(this).selectAll("path").attr("opacity", 1);
-            //  });
+            group.on("mouseenter", function (event) {
+                d3.select(this).selectAll("path").attr("opacity", 0.8);
+                // Calculate position relative to container
+                const [mx, my] = d3.pointer(event, svg.node());
+                setHoveredData({
+                    x: mx,
+                    y: my,
+                    date: d3.select(this).datum().date,
+                    github: d3.select(this).datum().github,
+                    gitea: d3.select(this).datum().gitea
+                });
+            }).on("mouseleave", function () {
+                d3.select(this).selectAll("path").attr("opacity", 1);
+                setHoveredData(null);
+            });
+
+            // Attach data to group for access in handler
+            group.datum(dataItem);
         }
 
     }, [data, loading]);
@@ -262,7 +276,8 @@ const ActivityHeatmap = () => {
             alignItems: 'center',
             justifyContent: 'center',
             padding: '0',
-            overflow: 'hidden'
+            overflow: 'visible', // Allow tooltip to render outside if needed
+            position: 'relative' // Anchor for absolute tooltip
         }}>
             <h2 className="uppercase" style={{ fontSize: '1.5rem', marginBottom: '10px', color: '#888' }}>
                 Contribution Topography
@@ -282,6 +297,31 @@ const ActivityHeatmap = () => {
                 preserveAspectRatio="xMidYMid meet"
                 style={{ width: '100%', height: 'auto', overflow: 'visible' }}
             />
+
+            {hoveredData && (
+                <div style={{
+                    position: 'absolute',
+                    left: hoveredData.x + 10, // Closer offset
+                    top: hoveredData.y - 30,
+                    background: 'rgba(0,0,0,0.9)',
+                    border: '1px solid #444',
+                    borderRadius: '4px',
+                    padding: '10px',
+                    pointerEvents: 'none',
+                    zIndex: 10,
+                    fontSize: '0.8rem',
+                    fontFamily: 'monospace',
+                    boxShadow: '0 4px 10px rgba(0,0,0,0.5)'
+                }}>
+                    <div style={{ fontWeight: 'bold', marginBottom: '5px', color: '#fff' }}>
+                        {hoveredData.date ? hoveredData.date.toDateString() : 'Date'}
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                        <div style={{ color: '#2da44e' }}>GitHub: {hoveredData.github || 0}</div>
+                        <div style={{ color: '#ff4d00' }}>Gitea: {hoveredData.gitea || 0}</div>
+                    </div>
+                </div>
+            )}
         </section>
     );
 };
