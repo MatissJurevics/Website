@@ -7,8 +7,8 @@ const Terrain = () => {
     const mesh = useRef();
     const noise3D = useMemo(() => createNoise3D(), []);
 
-    // Create geometry with high segment count for smooth wave
-    const geometry = useMemo(() => new THREE.PlaneGeometry(15, 15, 64, 64), []);
+    // Create geometry with HIGHER segment count for smoother, denser wave like the reference
+    const geometry = useMemo(() => new THREE.PlaneGeometry(20, 20, 100, 100), []);
 
     useFrame((state) => {
         if (mesh.current) {
@@ -18,27 +18,25 @@ const Terrain = () => {
             for (let i = 0; i < positions.count; i++) {
                 const x = positions.getX(i);
                 const y = positions.getY(i);
-                // Animate z-axis with noise based on x, y and time
-                // Frequency: how "zoomed in" the noise is (0.3)
-                // Amplitude: height of waves (1.5)
-                const z = noise3D(x * 0.3, y * 0.3, time * 0.2) * 1.5;
+                // Smoother noise settings
+                const z = noise3D(x * 0.15, y * 0.15, time * 0.15) * 2;
                 positions.setZ(i, z);
             }
             positions.needsUpdate = true;
 
-            // Slight rotation for perspective
-            mesh.current.rotation.x = -Math.PI / 3;
-            mesh.current.rotation.z += 0.001;
+            // Slight rotation
+            mesh.current.rotation.x = -Math.PI / 2.5;
+            mesh.current.rotation.z += 0.0005;
         }
     });
 
     return (
         <mesh ref={mesh} geometry={geometry}>
-            {/* Wireframe material options */}
-            <meshStandardMaterial
-                color="#333"
+            <meshBasicMaterial
+                color="#000000"
                 wireframe={true}
-                wireframeLinewidth={1.5}
+                transparent={true}
+                opacity={0.15}
             />
         </mesh>
     );
@@ -49,7 +47,7 @@ const HeroModel = () => {
         <div style={{ width: '100%', height: '100vh', position: 'absolute', top: 0, left: 0, zIndex: 0 }}>
             <Canvas
                 shadows
-                camera={{ position: [0, 5, 10], fov: 45 }}
+                camera={{ position: [0, 5, 8], fov: 55 }}
                 dpr={[1, 2]}
             >
                 <Suspense fallback={null}>
