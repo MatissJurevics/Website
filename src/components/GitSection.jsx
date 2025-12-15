@@ -1,5 +1,5 @@
 import React from 'react';
-import GithubHistory from './GithubHistory';
+import GitHistory from './GitHistory';
 import ActivityHeatmap from './ActivityHeatmap';
 
 const GitSection = () => {
@@ -27,7 +27,7 @@ const GitSection = () => {
                     minWidth: '350px',
                     maxWidth: '500px'
                 }}>
-                    <GithubHistory />
+                    <GitHistory />
                 </div>
 
                 {/* Right: Activity Heatmap 3D */}

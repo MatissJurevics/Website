@@ -18,10 +18,9 @@ const Footer = () => {
                 <div>
                     <h4 className="uppercase" style={{ marginBottom: '20px', color: '#666' }}>Socials</h4>
                     <ul style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                        <li><a href="#">Instagram</a></li>
-                        <li><a href="#">Twitter / X</a></li>
-                        <li><a href="#">LinkedIn</a></li>
-                        <li><a href="#">GitHub</a></li>
+                        <li><a href="https://instagram.com/matiss.j20">Instagram</a></li>
+                        <li><a href="https://www.linkedin.com/in/matiss-jurevics-121162240/">LinkedIn</a></li>
+                        <li><a href="https://github.com/MatissJurevics">GitHub</a></li>
                     </ul>
                 </div>
 

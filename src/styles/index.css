@@ -40,3 +40,15 @@ ul {
 canvas {
     touch-action: none;
 }
+
+/* Utility to hide scrollbar */
+.hide-scrollbar {
+    -ms-overflow-style: none !important;
+    /* IE and Edge */
+    scrollbar-width: none !important;
+    /* Firefox */
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+    display: none !important;
+}
