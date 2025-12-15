@@ -4,7 +4,7 @@ import HeroModel from './canvas/HeroModel';
 import ProductGrid from './components/ProductGrid';
 import InfoTabs from './components/InfoTabs';
 import Footer from './components/Footer';
-import './styles/index.css';
+import './index.css';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lenis from '@studio-freight/lenis'
