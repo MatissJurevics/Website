@@ -5,6 +5,7 @@ import * as THREE from 'three';
 
 const Terrain = () => {
     const mesh = useRef();
+    const materialRef = useRef();
     const noise3D = useMemo(() => createNoise3D(), []);
 
     // Create geometry with HIGHER segment count for smoother, denser wave like the reference
@@ -27,16 +28,24 @@ const Terrain = () => {
             // Slight rotation
             mesh.current.rotation.x = -Math.PI / 2.5;
             mesh.current.rotation.z += 0.0005;
+
+            // Entrance animation logic (simple lerp for opacity)
+            // We start opacity at 0 in the material and lerp to 0.15
+            // Ideally use a spring or GSAP, but lerp is cheap and easy here
+            if (materialRef.current) {
+                materialRef.current.opacity = THREE.MathUtils.lerp(materialRef.current.opacity, 0.15, 0.02);
+            }
         }
     });
 
     return (
         <mesh ref={mesh} geometry={geometry}>
             <meshBasicMaterial
+                ref={materialRef}
                 color="#000000"
                 wireframe={true}
                 transparent={true}
-                opacity={0.15}
+                opacity={0} // Start invisible for animation
             />
         </mesh>
     );

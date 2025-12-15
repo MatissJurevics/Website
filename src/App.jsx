@@ -14,6 +14,7 @@ function App() {
   const lenisRef = useRef()
 
   useEffect(() => {
+    // Lenis setup
     const lenis = new Lenis({
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -34,8 +35,28 @@ function App() {
 
     requestAnimationFrame(raf)
 
+    // Hero Text Animation
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline();
+      tl.from(".hero-title", {
+        y: 100,
+        opacity: 0,
+        duration: 1.5,
+        ease: "power4.out",
+        delay: 0.5
+      })
+        .from(".hero-subtitle", {
+          y: 20,
+          opacity: 0,
+          duration: 1,
+          ease: "power3.out"
+        }, "-=1");
+
+    });
+
     return () => {
       lenis.destroy()
+      ctx.revert();
     }
   }, [])
 
@@ -64,16 +85,19 @@ function App() {
             mixBlendMode: 'difference', // Ensure text pops against wireframe
             color: '#fff'
           }}>
-            <h1 style={{
-              fontSize: '8rem',
-              fontWeight: '900',
-              lineHeight: '0.8',
-              letterSpacing: '-0.05em',
-              textTransform: 'uppercase'
-            }}>
-              Matiss <br /> Jurevics
-            </h1>
-            <p style={{
+            <div style={{ overflow: 'hidden' }}>
+              <h1 className="hero-title" style={{
+                fontSize: '8rem',
+                fontWeight: '900',
+                lineHeight: '0.8',
+                zIndex: 10,
+                letterSpacing: '-0.05em',
+                textTransform: 'uppercase'
+              }}>
+                Matiss <br /> Jurevics
+              </h1>
+            </div>
+            <p className="hero-subtitle" style={{
               marginTop: '30px',
               fontSize: '1.2rem',
               fontFamily: 'monospace',

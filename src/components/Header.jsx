@@ -37,9 +37,6 @@ const Header = () => {
                 <a href="#contact">Contact</a>
             </nav>
 
-            <div className="cart">
-                Cart (0)
-            </div>
         </header>
     );
 };
