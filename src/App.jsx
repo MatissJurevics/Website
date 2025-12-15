@@ -79,11 +79,10 @@ function App() {
 
           <div style={{
             position: 'relative', // Changed to relative to sit on top of canvas if needed, or maintain z-index structure
-            zIndex: 1,
+            zIndex: 10,
             pointerEvents: 'none',
             textAlign: 'center',
-            mixBlendMode: 'difference', // Ensure text pops against wireframe
-            color: '#fff'
+            color: '#000' // Solid black text to sit on top of wireframe
           }}>
             <div style={{ overflow: 'hidden' }}>
               <h1 className="hero-title" style={{
