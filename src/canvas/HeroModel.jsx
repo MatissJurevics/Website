@@ -1,77 +1,65 @@
-import React, { useRef, useState, Suspense } from 'react';
+import React, { useRef, useMemo, Suspense } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrthographicCamera, Environment, ContactShadows, Float } from '@react-three/drei';
+import { createNoise3D } from 'simplex-noise';
 import * as THREE from 'three';
 
-const Device = (props) => {
+const Terrain = () => {
     const mesh = useRef();
+    const noise3D = useMemo(() => createNoise3D(), []);
 
-    // Rotate based on mouse position (simplified for now, logic can be in global state or event)
+    // Create geometry with high segment count for smooth wave
+    const geometry = useMemo(() => new THREE.PlaneGeometry(15, 15, 64, 64), []);
+
     useFrame((state) => {
         if (mesh.current) {
-            // Gentle idle rotation
-            mesh.current.rotation.y += 0.002;
+            const time = state.clock.getElapsedTime();
+            const positions = mesh.current.geometry.attributes.position;
 
-            // Mouse interaction (lerp to mouse x/y)
-            const t = state.clock.getElapsedTime();
-            mesh.current.rotation.x = THREE.MathUtils.lerp(mesh.current.rotation.x, Math.cos(t / 2) / 8 + state.mouse.y / 4, 0.1);
-            mesh.current.rotation.z = THREE.MathUtils.lerp(mesh.current.rotation.z, Math.sin(t / 4) / 8, 0.1);
-            mesh.current.rotation.y = THREE.MathUtils.lerp(mesh.current.rotation.y, state.mouse.x / 4, 0.1);
+            for (let i = 0; i < positions.count; i++) {
+                const x = positions.getX(i);
+                const y = positions.getY(i);
+                // Animate z-axis with noise based on x, y and time
+                // Frequency: how "zoomed in" the noise is (0.3)
+                // Amplitude: height of waves (1.5)
+                const z = noise3D(x * 0.3, y * 0.3, time * 0.2) * 1.5;
+                positions.setZ(i, z);
+            }
+            positions.needsUpdate = true;
+
+            // Slight rotation for perspective
+            mesh.current.rotation.x = -Math.PI / 3;
+            mesh.current.rotation.z += 0.001;
         }
     });
 
     return (
-        <group {...props} dispose={null}>
-            <Float speed={2} rotationIntensity={0.5} floatIntensity={0.5}>
-                {/* Main Body - Industrial Grey Box */}
-                <mesh ref={mesh}>
-                    <boxGeometry args={[2, 3, 0.5]} />
-                    <meshStandardMaterial color="#d4d4d4" roughness={0.4} metalness={0.1} />
-
-                    {/* Screen / Detail */}
-                    <mesh position={[0, 0.8, 0.26]}>
-                        <planeGeometry args={[1.5, 0.8]} />
-                        <meshBasicMaterial color="#111" />
-                    </mesh>
-
-                    {/* Orange Dial -- Teenage Engineering signature */}
-                    <mesh position={[0.5, -0.5, 0.3]} rotation={[1.57, 0, 0]}>
-                        <cylinderGeometry args={[0.2, 0.2, 0.2, 32]} />
-                        <meshStandardMaterial color="#ff4d00" />
-                    </mesh>
-
-                    {/* Buttons */}
-                    <mesh position={[-0.5, -0.5, 0.3]} rotation={[1.57, 0, 0]}>
-                        <cylinderGeometry args={[0.15, 0.15, 0.1, 32]} />
-                        <meshStandardMaterial color="#333" />
-                    </mesh>
-                    <mesh position={[-0.5, -0.9, 0.3]} rotation={[1.57, 0, 0]}>
-                        <cylinderGeometry args={[0.15, 0.15, 0.1, 32]} />
-                        <meshStandardMaterial color="#333" />
-                    </mesh>
-                </mesh>
-            </Float>
-        </group>
+        <mesh ref={mesh} geometry={geometry}>
+            {/* Wireframe material options */}
+            <meshStandardMaterial
+                color="#333"
+                wireframe={true}
+                wireframeLinewidth={1.5}
+            />
+        </mesh>
     );
 };
 
 const HeroModel = () => {
     return (
-        <div style={{ width: '100%', height: '80vh', position: 'relative', marginTop: 0, zIndex: 0 }}>
-            <Canvas shadows dpr={[1, 2]}>
+        <div style={{ width: '100%', height: '100vh', position: 'absolute', top: 0, left: 0, zIndex: 0 }}>
+            <Canvas
+                shadows
+                camera={{ position: [0, 5, 10], fov: 45 }}
+                dpr={[1, 2]}
+            >
                 <Suspense fallback={null}>
-                    {/* Orthographic Camera for schematic look */}
-                    <OrthographicCamera makeDefault position={[0, 0, 10]} zoom={150} />
-
-                    <ambientLight intensity={1.5} />
+                    <ambientLight intensity={0.5} />
                     <pointLight position={[10, 10, 10]} intensity={1} />
-                    <spotLight position={[-10, 15, 10]} angle={0.3} penumbra={1} castShadow intensity={2} shadow-bias={-0.0001} />
 
-                    <Device position={[0, 0, 0]} />
+                    <Terrain />
 
-                    {/* Environment for reflections */}
-                    <Environment preset="city" />
-                    <ContactShadows resolution={1024} scale={10} blur={2} opacity={0.25} far={10} color="#000" />
+                    {/* Fog to fade edges into background color */}
+                    <fog attach="fog" args={['#e4e4e4', 5, 20]} />
                 </Suspense>
             </Canvas>
         </div>

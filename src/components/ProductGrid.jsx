@@ -6,12 +6,10 @@ import '../styles/variables.css';
 gsap.registerPlugin(ScrollTrigger);
 
 const products = [
-    { id: 1, name: 'TX-6', desc: 'Portable Mixer', price: '$1199' },
-    { id: 2, name: 'CM-15', desc: 'Field Microphone', price: '$1199' },
-    { id: 3, name: 'TP-7', desc: 'Field Recorder', price: '$1499' },
-    { id: 4, name: 'OB-4', desc: 'Magic Radio', price: '$649' },
-    { id: 5, name: 'OD-11', desc: 'Cloud Speaker', price: '$999' },
-    { id: 6, name: 'EP-133', desc: 'K.O. II', price: '$299' },
+    { id: 1, name: 'Portfolio V1', desc: 'Web Design', price: '2023' },
+    { id: 2, name: 'Neon Dreams', desc: 'WebGL Experience', price: '2024' },
+    { id: 3, name: 'Type Lab', desc: 'Typography Tool', price: '2024' },
+    { id: 4, name: 'Audio Vis', desc: 'Sound Reactive', price: '2023' },
 ];
 
 const ProductGrid = () => {
@@ -67,7 +65,7 @@ const ProductGrid = () => {
     };
 
     return (
-        <section id="products" ref={gridRef} style={{
+        <section id="work" ref={gridRef} style={{
             padding: '100px 20px',
             background: '#fff',
             minHeight: '100vh'
@@ -81,8 +79,8 @@ const ProductGrid = () => {
                     justifyContent: 'space-between',
                     alignItems: 'baseline'
                 }} ref={titleRef}>
-                    <h2 className="uppercase" style={{ fontSize: '2rem', margin: 0 }}>Field System</h2>
-                    <span className="mono" style={{ fontSize: '0.9rem', color: '#666' }}>ENGINEERING / AUDIO</span>
+                    <h2 className="uppercase" style={{ fontSize: '2rem', margin: 0 }}>Selected Work</h2>
+                    <span className="mono" style={{ fontSize: '0.9rem', color: '#666' }}>DESIGN / CODE</span>
                 </div>
 
                 <div style={{
@@ -112,7 +110,7 @@ const ProductGrid = () => {
                             onMouseLeave={onLeave}
                         >
                             <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', zIndex: 2 }}>
-                                <span className="mono" style={{ fontSize: '0.8rem', color: '#ff4d00' }}>00{p.id}</span>
+                                <span className="mono" style={{ fontSize: '0.8rem', color: '#ff4d00' }}>0{p.id}</span>
                                 <div className="indicator" style={{
                                     width: '8px',
                                     height: '8px',
@@ -132,7 +130,7 @@ const ProductGrid = () => {
                                 fontWeight: 800,
                                 userSelect: 'none'
                             }}>
-                                TE
+                                MJ
                             </div>
 
                             <div style={{ zIndex: 2 }}>

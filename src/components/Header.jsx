@@ -28,13 +28,13 @@ const Header = () => {
     return (
         <header style={headerStyle}>
             <div className="logo" style={{ fontSize: '18px', fontWeight: 'bold' }}>
-                te
+                mj
             </div>
 
             <nav style={navStyle}>
-                <a href="#products">Products</a>
-                <a href="#about">Now</a>
-                <a href="#store">Store</a>
+                <a href="#work">Work</a>
+                <a href="#about">About</a>
+                <a href="#contact">Contact</a>
             </nav>
 
             <div className="cart">

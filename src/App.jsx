@@ -54,33 +54,34 @@ function App() {
           position: 'relative',
           paddingTop: '60px'
         }}>
+          <HeroModel />
+
           <div style={{
-            position: 'absolute',
-            top: '20%',
-            left: '10%',
+            position: 'relative', // Changed to relative to sit on top of canvas if needed, or maintain z-index structure
             zIndex: 1,
-            pointerEvents: 'none'
+            pointerEvents: 'none',
+            textAlign: 'center',
+            mixBlendMode: 'difference', // Ensure text pops against wireframe
+            color: '#fff'
           }}>
             <h1 style={{
               fontSize: '8rem',
               fontWeight: '900',
               lineHeight: '0.8',
-              color: '#000',
-              letterSpacing: '-0.05em'
+              letterSpacing: '-0.05em',
+              textTransform: 'uppercase'
             }}>
-              OP-1 <br /> FIELD
+              Matiss <br /> Jurevics
             </h1>
             <p style={{
-              marginTop: '20px',
+              marginTop: '30px',
               fontSize: '1.2rem',
-              maxWidth: '300px',
-              fontFamily: 'monospace'
+              fontFamily: 'monospace',
+              letterSpacing: '0.1em'
             }}>
-              The portable synthesizer. Refined, reshaped, reborn.
+              Creative Developer / Designer
             </p>
           </div>
-
-          <HeroModel />
         </section>
 
         {/* Product Grid Section */}
