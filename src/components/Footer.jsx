@@ -36,20 +36,20 @@ const Footer = () => {
                     <p style={{ marginBottom: '20px', color: '#888' }}>
                         Occasional updates on new projects and experiments.
                     </p>
-                    <div style={{ display: 'flex', borderBottom: '1px solid #333' }}>
+                    <form
+                        action="https://buttondown.com/api/emails/embed-subscribe/matiss"
+                        method="post"
+                        target="_blank"
+                        style={{ display: 'flex', borderBottom: '1px solid #333' }}
+                    >
                         <input
+                            className="footer-input"
                             type="email"
+                            name="email"
                             placeholder="email address"
-                            style={{
-                                background: 'transparent',
-                                border: 'none',
-                                color: '#fff',
-                                padding: '10px 0',
-                                flex: 1,
-                                outline: 'none'
-                            }}
                         />
-                        <button style={{
+                        <input type="hidden" value="1" name="embed" />
+                        <button type="submit" style={{
                             background: 'transparent',
                             border: 'none',
                             color: '#ff4d00',
@@ -59,7 +59,7 @@ const Footer = () => {
                         }}>
                             Subscribe
                         </button>
-                    </div>
+                    </form>
                 </div>
             </div>
 

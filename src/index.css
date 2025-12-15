@@ -36,6 +36,34 @@ h1 {
   line-height: 1.1;
 }
 
+/* Footer Input */
+.footer-input {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #333;
+  color: #fff;
+  padding: 15px 0;
+  font-size: 1.2rem;
+  font-family: inherit;
+  flex: 1;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.footer-input:focus {
+  border-bottom: 1px solid #ff4d00;
+}
+
+.footer-input::placeholder {
+  color: #666;
+  font-size: 1.1rem;
+  transition: color 0.3s ease;
+}
+
+.footer-input:focus::placeholder {
+  color: #888;
+}
+
 button {
   border-radius: 8px;
   border: 1px solid transparent;
