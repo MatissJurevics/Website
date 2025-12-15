@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import WhereAmI from './WhereAmI';
 import GithubHistory from './GithubHistory';
+import ActivityHeatmap from './ActivityHeatmap';
 
 const InfoTabs = () => {
     const [activeTab, setActiveTab] = useState('location');
@@ -47,7 +48,24 @@ const InfoTabs = () => {
                         transition: 'all 0.3s ease'
                     }}
                 >
-                    Github History
+                    History
+                </button>
+                <button
+                    onClick={() => setActiveTab('activity')}
+                    style={{
+                        background: 'transparent',
+                        border: 'none',
+                        borderBottom: activeTab === 'activity' ? '2px solid #ff4d00' : '2px solid transparent',
+                        color: activeTab === 'activity' ? '#fff' : '#666',
+                        padding: '10px 20px',
+                        cursor: 'pointer',
+                        fontSize: '0.9rem',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.1em',
+                        transition: 'all 0.3s ease'
+                    }}
+                >
+                    Activity 3D
                 </button>
             </div>
 
@@ -55,6 +73,7 @@ const InfoTabs = () => {
             <div>
                 {activeTab === 'location' && <WhereAmI />}
                 {activeTab === 'github' && <GithubHistory />}
+                {activeTab === 'activity' && <ActivityHeatmap />}
             </div>
         </div>
     );

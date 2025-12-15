@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import Header from './components/Header';
 import HeroModel from './canvas/HeroModel';
 import ProductGrid from './components/ProductGrid';
-import WhereAmI from './components/WhereAmI';
+import InfoTabs from './components/InfoTabs';
 import Footer from './components/Footer';
 import './styles/index.css';
 import gsap from 'gsap';
@@ -110,7 +110,7 @@ function App() {
 
         {/* Product Grid Section */}
         <ProductGrid />
-        <WhereAmI />
+        <InfoTabs />
 
         <Footer />
       </main>
