@@ -6,11 +6,12 @@ import '../styles/variables.css';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const products = [
-    { id: 1, name: 'Portfolio V1', desc: 'Web Design', price: '2023' },
-    { id: 2, name: 'Neon Dreams', desc: 'WebGL Experience', price: '2024' },
-    { id: 3, name: 'Type Lab', desc: 'Typography Tool', price: '2024' },
-    { id: 4, name: 'Audio Vis', desc: 'Sound Reactive', price: '2023' },
+
+
+const REPO_LIST = [
+    'MatissJurevics/Gene-AI',
+    'MatissJurevics/movesync',
+    'MatissJurevics/script-server',
 ];
 
 const ProductGrid = () => {
@@ -18,8 +19,63 @@ const ProductGrid = () => {
     const titleRef = useRef(null);
     const itemRefs = useRef([]);
     const [selectedProject, setSelectedProject] = useState(null);
+    const [products, setProducts] = useState([]);
 
     useEffect(() => {
+        const fetchRepos = async () => {
+            const promises = REPO_LIST.map(async (repoName, index) => {
+                try {
+                    const res = await fetch(`https://api.github.com/repos/${repoName}`);
+                    if (!res.ok) throw new Error('Fetch failed');
+                    const data = await res.json();
+                    return {
+                        id: index + 1,
+                        name: data.name,
+                        desc: data.description || data.language || 'No description',
+                        price: `★ ${data.stargazers_count}`,
+                        language: data.language,
+                        url: data.html_url,
+                        raw: data
+                    };
+                } catch (e) {
+                    console.warn(`Failed to load ${repoName}`, e);
+                    // Fallback or skip
+                    return {
+                        id: index + 1,
+                        name: repoName.split('/')[1],
+                        desc: 'Loading Error',
+                        price: 'NT',
+                        url: '#'
+                    };
+                }
+            });
+
+            const results = await Promise.all(promises);
+
+            // Add Manual Gumroad Project
+            const manualProject = {
+                id: 'wireframe', // unique string ID to avoid collision
+                name: 'Wireframe UI Kit',
+                desc: 'Web Design Resource',
+                price: '$29',
+                url: 'https://saetom.gumroad.com/l/WireframeUIKit',
+                image: '/images/wireframe_kit.png',
+                details: `
+                    A comprehensive Wireframe UI Kit designed to speed up your prototyping workflow.
+                    Includes over 100+ customizable components, varying layouts, and responsive patterns.
+                    Perfect for designers and developers looking to create high-fidelity wireframes quickly.
+                `
+            };
+
+            setProducts([manualProject, ...results]);
+        };
+
+        fetchRepos();
+    }, []);
+
+    useEffect(() => {
+        if (!products.length) return; // Wait for data
+
         const ctx = gsap.context(() => {
             // Animate Title
             gsap.from(titleRef.current, {
@@ -52,7 +108,7 @@ const ProductGrid = () => {
         }, gridRef);
 
         return () => ctx.revert();
-    }, []);
+    }, [products]);
 
     const onEnter = ({ currentTarget }) => {
         gsap.to(currentTarget, { backgroundColor: '#fff', scale: 0.98, duration: 0.3 });
@@ -114,7 +170,9 @@ const ProductGrid = () => {
                                 onClick={() => setSelectedProject(p)}
                             >
                                 <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', zIndex: 2 }}>
-                                    <span className="mono" style={{ fontSize: '0.8rem', color: '#ff4d00' }}>0{p.id}</span>
+                                    <span className="mono" style={{ fontSize: '0.8rem', color: '#ff4d00' }}>
+                                        {typeof p.id === 'number' ? `0${p.id}` : 'NEW'}
+                                    </span>
                                     <div className="indicator" style={{
                                         width: '8px',
                                         height: '8px',
@@ -123,24 +181,32 @@ const ProductGrid = () => {
                                     }}></div>
                                 </div>
 
-                                {/* Placeholder for Product Image */}
+                                {/* Product Image or Placeholder */}
                                 <div className="product-img" style={{
                                     flex: 1,
                                     display: 'flex',
                                     alignItems: 'center',
                                     justifyContent: 'center',
-                                    fontSize: '5rem',
+                                    fontSize: '3rem',
                                     color: '#e0e0e0',
                                     fontWeight: 800,
-                                    userSelect: 'none'
+                                    userSelect: 'none',
+                                    textAlign: 'center',
+                                    wordBreak: 'break-word',
+                                    lineHeight: 1.2,
+                                    overflow: 'hidden'
                                 }}>
-                                    MJ
+                                    {p.image ? (
+                                        <img src={p.image} alt={p.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                    ) : (
+                                        p.name.substring(0, 10)
+                                    )}
                                 </div>
 
                                 <div style={{ zIndex: 2 }}>
-                                    <h3 style={{ fontSize: '1.5rem', marginBottom: '5px' }}>{p.name}</h3>
+                                    <h3 style={{ fontSize: '1.5rem', marginBottom: '5px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.name}</h3>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.9rem', color: '#666' }}>
-                                        <span>{p.desc}</span>
+                                        <span style={{ maxWidth: '70%', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.desc}</span>
                                         <span>{p.price}</span>
                                     </div>
                                 </div>

@@ -102,9 +102,16 @@ const ProjectModal = ({ project, onClose }) => {
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        borderRight: '1px solid #ccc'
+                        borderRight: '1px solid #ccc',
+                        overflow: 'hidden'
                     }}>
-                        <h1 style={{ fontSize: '8vw', color: '#f0f0f0', fontWeight: '900' }}>MJ</h1>
+                        {project.image ? (
+                            <img src={project.image} alt={project.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        ) : (
+                            <h1 style={{ fontSize: '8vw', color: '#f0f0f0', fontWeight: '900' }}>
+                                {project.name ? project.name.substring(0, 2).toUpperCase() : 'MJ'}
+                            </h1>
+                        )}
                     </div>
 
                     {/* Right: Info */}
@@ -118,23 +125,18 @@ const ProjectModal = ({ project, onClose }) => {
                     }}>
                         <div>
                             <span className="mono" style={{ color: '#ff4d00', marginBottom: '10px', display: 'block' }}>
-                                {project.price} {/* Using 'price' for Year based on previous data struct */}
+                                {project.price}
                             </span>
                             <h2 className="uppercase" style={{ fontSize: '3rem', lineHeight: 1, marginBottom: '20px' }}>
                                 {project.name}
                             </h2>
                             <p style={{ fontSize: '1.1rem', color: '#444', marginBottom: '40px', lineHeight: 1.6 }}>
-                                This is a detailed description of the {project.name} project.
-                                It explores the intersection of design and technology,
-                                focusing on user experience and visual impact.
+                                {project.details || project.desc || "No details available."}
                             </p>
 
                             <div className="mono" style={{ fontSize: '0.9rem', color: '#666' }}>
-                                <h4 style={{ color: '#000', marginBottom: '10px' }}>Role</h4>
-                                <p>Design, Development</p>
-                                <br />
-                                <h4 style={{ color: '#000', marginBottom: '10px' }}>Tech Stack</h4>
-                                <p>React, Three.js, GSAP</p>
+                                <h4 style={{ color: '#000', marginBottom: '10px' }}>Type</h4>
+                                <p>{project.language || 'Design / Resource'}</p>
                             </div>
                         </div>
 
@@ -152,6 +154,7 @@ const ProjectModal = ({ project, onClose }) => {
                         }}
                             onMouseEnter={(e) => e.target.style.background = '#ff4d00'}
                             onMouseLeave={(e) => e.target.style.background = '#000'}
+                            onClick={() => window.open(project.url, '_blank')}
                         >
                             View Live
                         </button>
