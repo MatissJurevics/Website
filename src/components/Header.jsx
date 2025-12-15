@@ -31,11 +31,7 @@ const Header = () => {
                 mj
             </div>
 
-            <nav style={navStyle}>
-                <a href="#work">Work</a>
-                <a href="#about">About</a>
-                <a href="#contact">Contact</a>
-            </nav>
+            
 
         </header>
     );
