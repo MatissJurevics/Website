@@ -62,13 +62,13 @@ const GithubHistory = () => {
 
     return (
         <section style={{
-            height: '600px',
-            background: '#0a0a0a',
+            width: '100%',
+            height: '100%',
             color: '#e4e4e4',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            padding: '60px 20px',
+            padding: '0',
             position: 'relative'
         }}>
             <div style={{

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import WhereAmI from './WhereAmI';
-import GithubHistory from './GithubHistory';
-import ActivityHeatmap from './ActivityHeatmap';
+import GitSection from './GitSection';
 
 const InfoTabs = () => {
     const [activeTab, setActiveTab] = useState('location');
@@ -34,12 +33,12 @@ const InfoTabs = () => {
                     Where Am I?
                 </button>
                 <button
-                    onClick={() => setActiveTab('github')}
+                    onClick={() => setActiveTab('git')}
                     style={{
                         background: 'transparent',
                         border: 'none',
-                        borderBottom: activeTab === 'github' ? '2px solid #ff4d00' : '2px solid transparent',
-                        color: activeTab === 'github' ? '#fff' : '#666',
+                        borderBottom: activeTab === 'git' ? '2px solid #ff4d00' : '2px solid transparent',
+                        color: activeTab === 'git' ? '#fff' : '#666',
                         padding: '10px 20px',
                         cursor: 'pointer',
                         fontSize: '0.9rem',
@@ -48,32 +47,14 @@ const InfoTabs = () => {
                         transition: 'all 0.3s ease'
                     }}
                 >
-                    History
-                </button>
-                <button
-                    onClick={() => setActiveTab('activity')}
-                    style={{
-                        background: 'transparent',
-                        border: 'none',
-                        borderBottom: activeTab === 'activity' ? '2px solid #ff4d00' : '2px solid transparent',
-                        color: activeTab === 'activity' ? '#fff' : '#666',
-                        padding: '10px 20px',
-                        cursor: 'pointer',
-                        fontSize: '0.9rem',
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.1em',
-                        transition: 'all 0.3s ease'
-                    }}
-                >
-                    Activity 3D
+                    Git Activity
                 </button>
             </div>
 
             {/* Content Area */}
             <div>
                 {activeTab === 'location' && <WhereAmI />}
-                {activeTab === 'github' && <GithubHistory />}
-                {activeTab === 'activity' && <ActivityHeatmap />}
+                {activeTab === 'git' && <GitSection />}
             </div>
         </div>
     );

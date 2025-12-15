@@ -9,31 +9,42 @@ const ActivityHeatmap = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            try {
-                // 1. Fetch GitHub Data (using proxy)
-                const githubRes = await fetch('https://github-contributions-api.jogruber.de/v4/MatissJurevics');
-                const githubJson = await githubRes.json();
+            // Initialize default empty data
+            let githubData = { contributions: [] };
+            let giteaData = [];
 
-                // 2. Fetch Gitea Data
-                const giteaRes = await fetch('/api/gitea/api/v1/users/Matiss/heatmap');
-                const giteaJson = await giteaRes.json(); // Array of { timestamp, contributions }
+            try {
+                // 1. Fetch GitHub Data (Safe Fetch)
+                try {
+                    const githubRes = await fetch('https://github-contributions-api.jogruber.de/v4/MatissJurevics');
+                    if (githubRes.ok) {
+                        githubData = await githubRes.json();
+                    } else {
+                        console.warn("GitHub API fetch failed:", githubRes.status);
+                    }
+                } catch (e) {
+                    console.warn("GitHub API error:", e);
+                }
+
+                // 2. Fetch Gitea Data (Safe Fetch)
+                try {
+                    const giteaRes = await fetch('/api/gitea/api/v1/users/Matiss/heatmap');
+                    if (giteaRes.ok) {
+                        giteaData = await giteaRes.json();
+                    } else {
+                        console.warn("Gitea API fetch failed:", giteaRes.status);
+                    }
+                } catch (e) {
+                    console.warn("Gitea API error:", e);
+                }
 
                 // 3. Process & Merge
                 const processData = () => {
                     const merged = new Map();
-
-                    // Initialize with GitHub data (usually last year)
-                    // The proxy returns 'contributions' array for the last year usually? 
-                    // Actually correct structure from jogruber api is { total: {}, contributions: [ { date, count, level } ] }
-                    // But let's check what it returns specifically or handle 'years' object.
-                    // Usually structure val: { yearly: [] , total: {} }
-
-                    // Let's rely on standard logic: get last 365 days.
                     const today = new Date();
                     const oneYearAgo = new Date();
                     oneYearAgo.setDate(today.getDate() - 365);
 
-                    // Helper to normalize date string YYYY-MM-DD
                     const toKey = (date) => date.toISOString().split('T')[0];
 
                     // Initialize map with empty days
@@ -42,11 +53,8 @@ const ActivityHeatmap = () => {
                     }
 
                     // Fill GitHub
-                    // The API usually returns 'contributions' list. 
-                    // If structure is complex, we might need adjustments, but let's assume flat list available or extractable.
-                    // Actually, jogruber V4 returns: { total: {}, contributions: [ { date, count, level } ... ] }
-                    if (githubJson.contributions) {
-                        githubJson.contributions.forEach(day => {
+                    if (githubData && githubData.contributions) {
+                        githubData.contributions.forEach(day => {
                             if (merged.has(day.date)) {
                                 const curr = merged.get(day.date);
                                 curr.github = day.count;
@@ -56,9 +64,8 @@ const ActivityHeatmap = () => {
                     }
 
                     // Fill Gitea
-                    // Gitea heatmap endpoint returns array of { timestamp: unix_timestamp, contributions: count }
-                    if (Array.isArray(giteaJson)) {
-                        giteaJson.forEach(item => {
+                    if (Array.isArray(giteaData)) {
+                        giteaData.forEach(item => {
                             const d = new Date(item.timestamp * 1000);
                             const key = toKey(d);
                             if (merged.has(key)) {
@@ -75,8 +82,8 @@ const ActivityHeatmap = () => {
                 const processed = processData();
                 setData(processed);
             } catch (err) {
-                console.error("Error fetching activity:", err);
-                setError(err.message);
+                console.error("Critical error in ActivityHeatmap:", err);
+                // setError(err.message); // Suppress global error to show partial data
             } finally {
                 setLoading(false);
             }
@@ -95,7 +102,7 @@ const ActivityHeatmap = () => {
         svg.selectAll("*").remove();
 
         const g = svg.append("g")
-            .attr("transform", `translate(${width / 2}, ${height / 4})`); // Center top-ish
+            .attr("transform", `translate(220, 100)`); // Moved up to prevent cutoff
 
         // Isometric projection
         // x grid runs diagonally right-down, y grid runs diagonally left-down
@@ -238,22 +245,23 @@ const ActivityHeatmap = () => {
 
     if (error) {
         return (
-            <div style={{ height: '600px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#0a0a0a', color: '#ff4d00' }}>
-                DATA FLUX ERROR
+            <div style={{ height: '600px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#0a0a0a', color: '#ff4d00', flexDirection: 'column' }}>
+                <div>DATA FLUX ERROR</div>
+                <div style={{ fontSize: '0.8rem', marginTop: '10px', color: '#888' }}>{error}</div>
             </div>
         );
     }
 
     return (
         <section style={{
-            height: '600px',
-            background: '#0a0a0a',
+            width: '100%',
+            height: '100%',
             color: '#e4e4e4',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            padding: '40px 20px',
+            padding: '0',
             overflow: 'hidden'
         }}>
             <h2 className="uppercase" style={{ fontSize: '1.5rem', marginBottom: '10px', color: '#888' }}>
@@ -268,7 +276,12 @@ const ActivityHeatmap = () => {
                 </div>
             </div>
 
-            <svg ref={svgRef} width="1000" height="600" style={{ maxWidth: '100%', height: 'auto', overflow: 'visible' }} />
+            <svg
+                ref={svgRef}
+                viewBox="0 0 1000 600"
+                preserveAspectRatio="xMidYMid meet"
+                style={{ width: '100%', height: 'auto', overflow: 'visible' }}
+            />
         </section>
     );
 };
