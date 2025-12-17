@@ -19,6 +19,12 @@ const GlobeMesh = () => {
     const groupRef = useRef();
     const [bordersTexture, setBordersTexture] = useState(null);
 
+    // Detect mobile device and reduce polygon count accordingly
+    const isMobile = useMemo(() => {
+        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
+               (window.innerWidth <= 768);
+    }, []);
+
     // Generate Borders Texture using D3
     useEffect(() => {
         const generateTexture = async () => {
@@ -69,17 +75,23 @@ const GlobeMesh = () => {
         }
     });
 
+    // Reduce segment counts for mobile devices
+    const baseSphereSegments = isMobile ? 24 : 64; // Reduce from 64x64 to 24x24 on mobile
+    const wireframeSegments = isMobile ? 16 : 32; // Reduce from 32x32 to 16x16 on mobile
+    const markerSegments = isMobile ? 8 : 16; // Reduce from 16x16 to 8x8 on mobile
+    const ringSegments = isMobile ? 16 : 32; // Reduce from 32 to 16 on mobile
+
     return (
         <group ref={groupRef}>
             {/* 1. Base Dark Sphere (blocks background stars/wireframe from showing through backface) */}
             <mesh>
-                <sphereGeometry args={[1.95, 64, 64]} />
+                <sphereGeometry args={[1.95, baseSphereSegments, baseSphereSegments]} />
                 <meshBasicMaterial color="#000000" />
             </mesh>
 
             {/* 2. Light Wireframe Sphere - Outer Cage */}
             <mesh>
-                <sphereGeometry args={[2.0, 32, 32]} />
+                <sphereGeometry args={[2.0, wireframeSegments, wireframeSegments]} />
                 <meshBasicMaterial
                     color="#444"
                     wireframe={true}
@@ -91,7 +103,7 @@ const GlobeMesh = () => {
             {/* 3. Borders Sphere (Texture) */}
             {bordersTexture && (
                 <mesh>
-                    <sphereGeometry args={[2.01, 64, 64]} />
+                    <sphereGeometry args={[2.01, baseSphereSegments, baseSphereSegments]} />
                     <meshBasicMaterial
                         map={bordersTexture}
                         transparent={true}
@@ -105,11 +117,11 @@ const GlobeMesh = () => {
 
             {/* Ireland Marker */}
             <mesh position={irelandPos}>
-                <sphereGeometry args={[0.04, 16, 16]} />
+                <sphereGeometry args={[0.04, markerSegments, markerSegments]} />
                 <meshBasicMaterial color="#ff4d00" />
             </mesh>
             <mesh position={irelandPos}>
-                <ringGeometry args={[0.06, 0.09, 32]} />
+                <ringGeometry args={[0.06, 0.09, ringSegments]} />
                 <meshBasicMaterial color="#ff4d00" side={THREE.DoubleSide} transparent opacity={0.6} />
             </mesh>
         </group>

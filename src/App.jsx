@@ -5,6 +5,7 @@ import ProductGrid from './components/ProductGrid';
 import InfoTabs from './components/InfoTabs';
 import Footer from './components/Footer';
 import './index.css';
+import './styles/variables.css';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lenis from '@studio-freight/lenis'
@@ -83,7 +84,7 @@ function App() {
             zIndex: 10,
             pointerEvents: 'none',
             textAlign: 'center',
-            color: '#000' // Solid black text to sit on top of wireframe
+            color: 'var(--text-main, #000)' // Adapts to dark mode
           }}>
             <div style={{ overflow: 'hidden' }}>
               <h1 className="hero-title" style={{
