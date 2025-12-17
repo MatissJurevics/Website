@@ -8,8 +8,15 @@ const Terrain = () => {
     const materialRef = useRef();
     const noise3D = useMemo(() => createNoise3D(), []);
 
-    // Create geometry with HIGHER segment count for smoother, denser wave like the reference
-    const geometry = useMemo(() => new THREE.PlaneGeometry(20, 20, 100, 100), []);
+    // Detect mobile device and reduce polygon count accordingly
+    const isMobile = useMemo(() => {
+        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
+               (window.innerWidth <= 768);
+    }, []);
+
+    // Create geometry with reduced segment count for mobile devices
+    const segments = isMobile ? 40 : 100; // Reduce from 100x100 to 40x40 on mobile (84% reduction)
+    const geometry = useMemo(() => new THREE.PlaneGeometry(20, 20, segments, segments), [segments]);
 
     useFrame((state) => {
         if (mesh.current) {
@@ -52,6 +59,12 @@ const Terrain = () => {
 };
 
 const HeroModel = () => {
+    // Detect dark mode for fog color
+    const fogColor = useMemo(() => {
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        return prefersDark ? '#0a0a0a' : '#e4e4e4';
+    }, []);
+
     return (
         <div style={{ width: '100%', height: '100vh', position: 'absolute', top: 0, left: 0, zIndex: 0 }}>
             <Canvas
@@ -66,7 +79,7 @@ const HeroModel = () => {
                     <Terrain />
 
                     {/* Fog to fade edges into background color */}
-                    <fog attach="fog" args={['#e4e4e4', 5, 20]} />
+                    <fog attach="fog" args={[fogColor, 5, 20]} />
                 </Suspense>
             </Canvas>
         </div>

@@ -111,43 +111,49 @@ const ProductGrid = () => {
     }, [products]);
 
     const onEnter = ({ currentTarget }) => {
-        gsap.to(currentTarget, { backgroundColor: '#fff', scale: 0.98, duration: 0.3 });
+        const computedStyle = getComputedStyle(document.documentElement);
+        const hoverBg = computedStyle.getPropertyValue('--product-bg-hover').trim() || '#fff';
+        const gridLine = computedStyle.getPropertyValue('--grid-line').trim() || '#ccc';
+        gsap.to(currentTarget, { backgroundColor: hoverBg, scale: 0.98, duration: 0.3 });
         gsap.to(currentTarget.querySelector('.product-img'), { scale: 1.1, duration: 0.3 });
         gsap.to(currentTarget.querySelector('.indicator'), { backgroundColor: '#ff4d00', scale: 1.5, duration: 0.3 });
     };
 
     const onLeave = ({ currentTarget }) => {
-        gsap.to(currentTarget, { backgroundColor: '#f5f5f5', scale: 1, duration: 0.3 });
+        const computedStyle = getComputedStyle(document.documentElement);
+        const productBg = computedStyle.getPropertyValue('--product-bg').trim() || '#f5f5f5';
+        const gridLine = computedStyle.getPropertyValue('--grid-line').trim() || '#ccc';
+        gsap.to(currentTarget, { backgroundColor: productBg, scale: 1, duration: 0.3 });
         gsap.to(currentTarget.querySelector('.product-img'), { scale: 1, duration: 0.3 });
-        gsap.to(currentTarget.querySelector('.indicator'), { backgroundColor: '#ccc', scale: 1, duration: 0.3 });
+        gsap.to(currentTarget.querySelector('.indicator'), { backgroundColor: gridLine, scale: 1, duration: 0.3 });
     };
 
     return (
         <>
             <section id="work" ref={gridRef} style={{
                 padding: '100px 20px',
-                background: '#fff',
+                background: 'var(--bg-color, #fff)',
                 minHeight: '100vh'
             }}>
                 <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
                     <div style={{
                         marginBottom: '60px',
-                        borderBottom: '1px solid #000',
+                        borderBottom: '1px solid var(--text-main, #000)',
                         paddingBottom: '20px',
                         display: 'flex',
                         justifyContent: 'space-between',
                         alignItems: 'baseline'
                     }} ref={titleRef}>
-                        <h2 className="uppercase" style={{ fontSize: '2rem', margin: 0 }}>Selected Work</h2>
-                        <span className="mono" style={{ fontSize: '0.9rem', color: '#666' }}>DESIGN / CODE</span>
+                        <h2 className="uppercase" style={{ fontSize: '2rem', margin: 0, color: 'var(--text-main, #000)' }}>Selected Work</h2>
+                        <span className="mono" style={{ fontSize: '0.9rem', color: 'var(--text-dim, #666)' }}>DESIGN / CODE</span>
                     </div>
 
                     <div style={{
                         display: 'grid',
                         gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))',
                         gap: '2px', // Tight gap for grid lines effect
-                        background: '#ccc', // Color of grid lines
-                        border: '1px solid #ccc'
+                        background: 'var(--grid-line, #ccc)', // Color of grid lines
+                        border: '1px solid var(--grid-line, #ccc)'
                     }}>
                         {products.map((p, i) => (
                             <div
@@ -155,7 +161,7 @@ const ProductGrid = () => {
                                 ref={el => itemRefs.current[i] = el}
                                 className="product-item"
                                 style={{
-                                    background: '#f5f5f5',
+                                    background: 'var(--product-bg, #f5f5f5)',
                                     height: '450px',
                                     padding: '30px',
                                     display: 'flex',
@@ -176,7 +182,7 @@ const ProductGrid = () => {
                                     <div className="indicator" style={{
                                         width: '8px',
                                         height: '8px',
-                                        background: '#ccc',
+                                        background: 'var(--grid-line, #ccc)',
                                         borderRadius: '50%'
                                     }}></div>
                                 </div>
@@ -188,7 +194,7 @@ const ProductGrid = () => {
                                     alignItems: 'center',
                                     justifyContent: 'center',
                                     fontSize: '3rem',
-                                    color: '#e0e0e0',
+                                    color: 'var(--text-dim, #e0e0e0)',
                                     fontWeight: 800,
                                     userSelect: 'none',
                                     textAlign: 'center',
@@ -204,8 +210,8 @@ const ProductGrid = () => {
                                 </div>
 
                                 <div style={{ zIndex: 2 }}>
-                                    <h3 style={{ fontSize: '1.5rem', marginBottom: '5px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.name}</h3>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.9rem', color: '#666' }}>
+                                    <h3 style={{ fontSize: '1.5rem', marginBottom: '5px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: 'var(--text-main, #000)' }}>{p.name}</h3>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.9rem', color: 'var(--text-dim, #666)' }}>
                                         <span style={{ maxWidth: '70%', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.desc}</span>
                                         <span>{p.price}</span>
                                     </div>
