@@ -111,3 +111,16 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+/* Hero Title Mobile Responsive */
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 3rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-title {
+    font-size: 2rem !important;
+  }
+}
