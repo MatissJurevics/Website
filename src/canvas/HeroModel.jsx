@@ -15,7 +15,7 @@ const Terrain = () => {
     }, []);
 
     // Create geometry with reduced segment count for mobile devices
-    const segments = isMobile ? 40 : 100; // Reduce from 100x100 to 40x40 on mobile (84% reduction)
+    const segments = isMobile ? 28 : 100; // Reduce from 100x100 to 28x28 on mobile (50% polygon reduction)
     const geometry = useMemo(() => new THREE.PlaneGeometry(20, 20, segments, segments), [segments]);
 
     useFrame((state) => {
